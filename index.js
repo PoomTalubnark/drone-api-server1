@@ -21,7 +21,6 @@ app.get('/', (req, res) => {
 });
 
 // === Endpoint 1: GET /configs/:droneId ===
-// (ส่วนนี้ถูกต้องแล้วจากรอบที่แล้ว - image_348eaa.png)
 app.get('/configs/:droneId', async (req, res) => {
   try {
     const { droneId } = req.params;
@@ -46,7 +45,6 @@ app.get('/configs/:droneId', async (req, res) => {
 });
 
 // === Endpoint 2: GET /status/:droneId ===
-// (ส่วนนี้ถูกต้องแล้ว)
 app.get('/status/:droneId', async (req, res) => {
   try {
     const { droneId } = req.params;
@@ -73,7 +71,6 @@ app.get('/logs/:droneId', async (req, res) => {
     const headers = { 'Authorization': `Bearer ${LOG_API_TOKEN}` };
     
     // --- 💡 FIX 2: แก้ไขตรงนี้ ---
-    // ลบวงเล็บ ( ) ที่ครอบ filter ออก
     const params = {
       filter: `drone_id='${droneId}'`, // <-- ไม่มีวงเล็บแล้ว
       sort: '-created', 
