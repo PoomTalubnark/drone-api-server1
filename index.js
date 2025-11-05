@@ -21,28 +21,24 @@ app.get('/', (req, res) => {
 });
 
 // === Endpoint 1: GET /configs/:droneId ===
+// (ส่วนนี้ถูกต้องแล้วจากรอบที่แล้ว)
 app.get('/configs/:droneId', async (req, res) => {
   try {
     const { droneId } = req.params;
     const response = await axios.get(CONFIG_SERVER_URL);
-    
-    // --- 💡 FIX: แก้ไขตรงนี้ (ตามรูป image_c94bfe.png) ---
-    const configs = response.data.data; // ข้อมูลจริงอยู่ใน .data.data
-
+    const configs = response.data.data; 
     const config = configs.find(c => c.drone_id == droneId);
 
     if (!config) {
       return res.status(404).json({ error: 'Drone config not found' });
     }
-
     res.json({
       drone_id: config.drone_id,
       drone_name: config.drone_name,
       light: config.light,
       country: config.country,
-      weight: config.weight,
+      weight: config.weight, 
     });
-
   } catch (error) {
     console.error('Error fetching config:', error.message);
     res.status(500).json({ error: 'Failed to fetch config' });
@@ -50,24 +46,20 @@ app.get('/configs/:droneId', async (req, res) => {
 });
 
 // === Endpoint 2: GET /status/:droneId ===
+// (ส่วนนี้ถูกต้องแล้วจากรอบที่แล้ว)
 app.get('/status/:droneId', async (req, res) => {
   try {
     const { droneId } = req.params;
     const response = await axios.get(CONFIG_SERVER_URL);
-    
-    // --- 💡 FIX: แก้ไขตรงนี้ (ตามรูป image_c94bfe.png) ---
-    const configs = response.data.data; // ข้อมูลจริงอยู่ใน .data.data
-
+    const configs = response.data.data;
     const config = configs.find(c => c.drone_id == droneId);
 
     if (!config) {
-      return res.status(404).json({ error: 'Drone status not found' });
+      return res.status(44).json({ error: 'Drone status not found' });
     }
-
     res.json({
       condition: config.condition,
     });
-
   } catch (error) {
     console.error('Error fetching status:', error.message);
     res.status(500).json({ error: 'Failed to fetch status' });
@@ -79,11 +71,15 @@ app.get('/logs/:droneId', async (req, res) => {
   try {
     const { droneId } = req.params;
     const headers = { 'Authorization': `Bearer ${LOG_API_TOKEN}` };
+    
+    // --- 💡 FIX: แก้ไขตรงนี้ ---
+    // ลบวงเล็บ ( ) ที่ครอบ filter ออก
     const params = {
-      filter: `(drone_id='${droneId}')`,
-      sort: '-created',
+      filter: `drone_id='${droneId}'`, // <-- ไม่มีวงเล็บแล้ว
+      sort: '-created', 
       perPage: 12,
     };
+    // -------------------------
 
     const response = await axios.get(LOG_SERVER_URL, { headers, params });
     const logs = response.data.items; 
@@ -104,7 +100,7 @@ app.get('/logs/:droneId', async (req, res) => {
 });
 
 // === Endpoint 4: POST /logs ===
-app.post('/logs', async (req, res) => {
+app.post('/logs', async (req, res) => { 
   try {
     const body = req.body; 
     const payload = {
@@ -114,11 +110,11 @@ app.post('/logs', async (req, res) => {
       celsius: body.celsius,
     };
     const headers = {
-      'Authorization': `Bearer ${LOG_API_TOKEN}`,
+      'Authorization': `Bearer ${LOG_API_TOKEN}`, 
       'Content-Type': 'application/json',
     };
 
-    await axios.post(LOG_SERVER_URL, payload, { headers });
+    await axios.post(LOG_SERVER_URL, payload, { headers }); 
     res.status(201).json({ message: 'Log created successfully' });
 
   } catch (error) {
