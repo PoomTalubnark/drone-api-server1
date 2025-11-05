@@ -21,12 +21,12 @@ app.get('/', (req, res) => {
 });
 
 // === Endpoint 1: GET /configs/:droneId ===
-// (ส่วนนี้ถูกต้องแล้วจากรอบที่แล้ว)
+// (ส่วนนี้ถูกต้องแล้วจากรอบที่แล้ว - image_348eaa.png)
 app.get('/configs/:droneId', async (req, res) => {
   try {
     const { droneId } = req.params;
     const response = await axios.get(CONFIG_SERVER_URL);
-    const configs = response.data.data; 
+    const configs = response.data.data; // [FIX 1]
     const config = configs.find(c => c.drone_id == droneId);
 
     if (!config) {
@@ -46,16 +46,16 @@ app.get('/configs/:droneId', async (req, res) => {
 });
 
 // === Endpoint 2: GET /status/:droneId ===
-// (ส่วนนี้ถูกต้องแล้วจากรอบที่แล้ว)
+// (ส่วนนี้ถูกต้องแล้ว)
 app.get('/status/:droneId', async (req, res) => {
   try {
     const { droneId } = req.params;
     const response = await axios.get(CONFIG_SERVER_URL);
-    const configs = response.data.data;
+    const configs = response.data.data; // [FIX 1]
     const config = configs.find(c => c.drone_id == droneId);
 
     if (!config) {
-      return res.status(44).json({ error: 'Drone status not found' });
+      return res.status(404).json({ error: 'Drone status not found' });
     }
     res.json({
       condition: config.condition,
@@ -72,7 +72,7 @@ app.get('/logs/:droneId', async (req, res) => {
     const { droneId } = req.params;
     const headers = { 'Authorization': `Bearer ${LOG_API_TOKEN}` };
     
-    // --- 💡 FIX: แก้ไขตรงนี้ ---
+    // --- 💡 FIX 2: แก้ไขตรงนี้ ---
     // ลบวงเล็บ ( ) ที่ครอบ filter ออก
     const params = {
       filter: `drone_id='${droneId}'`, // <-- ไม่มีวงเล็บแล้ว
